@@ -112,22 +112,27 @@ jobs:
       - name: Create info
         run: |
           cat > ${{ github.workspace }}/router-info.md <<EOF
-          ## 📡 路由器后台信息
-          <a href="https://wkdaily.cpolar.cn/archives/1">
-           <img src="https://img.shields.io/badge/若下载慢可套用国内加速站下载-FC7C0D?logo=github&logoColor=fff&labelColor=000&style=for-the-badge"/>
-          </a>
+          ## 📡 J4125 + R8125 物理机专属固件
           
-          - 🏠 **后台地址**: ${{ github.event.inputs.custom_router_ip }}
+          > **注意**: 本固件专为 J4125 裸机设计，已剔除所有虚拟化驱动及 Docker。
+
+          - 🏠 **后台地址**: [http://${{ github.event.inputs.custom_router_ip }}](http://${{ github.event.inputs.custom_router_ip }})
           - 👤 **用户名**: root
-          - 🔑 **密码**: 无
+          - 🔑 **密码**: password (或无)
+          - 🚀 **特性**: 2.5G 网卡驱动优化、硬件流量分载加速、防火墙安全防护(默认拒绝WAN入站)
+          
+          ---
+          #### 📦 组件集成状态
           EOF
 
           if [ "${{ github.event.inputs.include_docker }}" == "yes" ]; then
-            extra_content="#### 默认带docker"
-            echo -e "\n$extra_content" >> ${{ github.workspace }}/router-info.md
+            echo "- ✅ 已集成 Docker 环境" >> ${{ github.workspace }}/router-info.md
           else
-            echo -e "\n#### 不带docker" >> ${{ github.workspace }}/router-info.md
+            echo "- ❌ 纯净模式：未集成 Docker" >> ${{ github.workspace }}/router-info.md
           fi
+          
+          echo "- 🌐 拨号设置: ${{ github.event.inputs.enable_pppoe == 'yes' && '已预设 PPPoE' || '自动 DHCP' }}" >> ${{ github.workspace }}/router-info.md
+          echo "- 📅 编译时间: $(date +'%Y-%m-%d %H:%M')" >> ${{ github.workspace }}/router-info.md
 
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
