@@ -99,9 +99,6 @@ https://wkdaily.cpolar.cn/15
 ### 新增Bandix流量监控 来自 https://github.com/timsaya/luci-app-bandix
 ### 新增rtp2httpd 来自https://github.com/stackia/rtp2httpd
 
-## ❤️赞助作者 ⬇️⬇️
-
-[![点击这里赞助我](https://img.shields.io/badge/点击这里赞助我-支持作者的项目-orange?logo=github)](https://wkdaily.cpolar.cn/01)
 
 
 
