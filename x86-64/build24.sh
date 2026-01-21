@@ -84,7 +84,7 @@ KEEP_DRIVERS="kmod-r8125 kmod-usb-net-asix-ax88179"
 REMOVE_DRIVERS="\
     -kmod-vmxnet3 -kmod-amazon-ena -kmod-pcnet32 -kmod-virtio-net \
     -kmod-e1000 -kmod-e1000e -kmod-igb -kmod-igc -kmod-ixgbe -kmod-r8168 -kmod-r8101 -kmod-tg3 -kmod-bnx2 -kmod-tulip \
-    -kmod-i915 -kmod-amdgpu -kmod-drm -intel-igpu-firmware-dmc \
+    -kmod-amdgpu -kmod-drm -intel-igpu-firmware-dmc \
     -kmod-iwlwifi -kmod-ath9k -kmod-ath10k -kmod-mt76 -kmod-rtl8xxxu -iwl100-firmware -iwl6000-firmware \
     -kmod-sound-hda-intel -kmod-sound-hda-core -kmod-sound-hda-codec-hdmi -alsa-utils \
     -kmod-bluetooth -kmod-nfc -kmod-usb-audio"
