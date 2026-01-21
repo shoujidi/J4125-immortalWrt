@@ -27,15 +27,6 @@ on:
         required: false
         type: boolean
         default: false
-      include_docker:
-        description: |
-          是否编译 Docker 插件
-        required: true
-        default: 'no'
-        type: choice
-        options:
-          - 'yes'
-          - 'no'
       enable_pppoe:
         description: "是否配置PPPoE拨号信息?"
         required: true
