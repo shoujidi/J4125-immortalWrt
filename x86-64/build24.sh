@@ -104,6 +104,32 @@ REMOVE_DOCKER_PACKAGES="-luci-app-dockerman -luci-i18n-dockerman-zh-cn -docker -
 PACKAGES="$PACKAGES $REMOVE_DOCKER_PACKAGES"
 
 echo "Docker packages disabled and marked for removal."
+
+# ============= 自定义 UI 修改 ==============
+
+# 1. 移动“高级卸载”到“服务”菜单
+mkdir -p files/usr/share/luci/menu.d/
+# 我们在编译脚本里直接生成一个修改脚本，让它在系统初次启动时生效
+mkdir -p files/etc/uci-defaults
+cat << 'EOF' > files/etc/uci-defaults/99-custom-ui-adjust
+#!/bin/sh
+# 查找高级卸载的定义文件并将 vum 替换为 services
+JSON_FILE="/usr/share/luci/menu.d/luci-app-uninstall.json"
+if [ -f "$JSON_FILE" ]; then
+    sed -i 's/"admin\/vum"/"admin\/services"/g' "$JSON_FILE"
+    sed -i 's/"vum"/"services"/g' "$JSON_FILE"
+fi
+# 清理缓存使菜单立即生效
+rm -f /tmp/luci-indexcache
+exit 0
+EOF
+chmod +x files/etc/uci-defaults/99-custom-ui-adjust
+
+# 2. 注入编译日期到概览页
+DATE_VERSION=$(date +%Y-%m-%d)
+mkdir -p files/etc
+echo "DISTRIB_DESCRIPTION='ImmortalWrt 24.10.4 ($DATE_VERSION)'" >> files/etc/openwrt_release
+
 # 判断是否需要编译 Docker 插件
 #if [ "$INCLUDE_DOCKER" = "yes" ]; then
  #   PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
