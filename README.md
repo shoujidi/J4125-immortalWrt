@@ -1,4 +1,4 @@
-J4125-8125 四网口专用固件
+## J4125-8125 四网口专用固件
 
 ## 🤔 这是什么？
 它是一个工作流。可快速构建 带docker且支持自定义固件大小的 immortalWrt
@@ -42,17 +42,7 @@ https://www.youtube.com/watch?v=7i6BQeitUtE
 
 
 
-## ❤️其它GitHub Action项目推荐🌟 （建议收藏）⬇️
-- ### [一键生成run插件] 🆕
-- https://github.com/wukongdaily/RunFilesBuilder<br>
-- ### [一键生成docker离线镜像] 🆕
-- https://github.com/wukongdaily/DockerTarBuilder<br>
-- ### [OpenWrt/Armbian IMG安装器ISO] 🆕
-- https://github.com/wukongdaily/img-installer
 
-
-## ❤️如何构建docker版ImmortalWrt（建议收藏）⬇️
-https://wkdaily.cpolar.cn/15
 # 🌟鸣谢
 ### https://github.com/immortalwrt
 ### https://github.com/ophub/flippy-openwrt-actions
