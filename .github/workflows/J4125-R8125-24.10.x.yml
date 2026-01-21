@@ -134,13 +134,21 @@ jobs:
           echo "- 🌐 拨号设置: ${{ github.event.inputs.enable_pppoe == 'yes' && '已预设 PPPoE' || '自动 DHCP' }}" >> ${{ github.workspace }}/router-info.md
           echo "- 📅 编译时间: $(date +'%Y-%m-%d %H:%M')" >> ${{ github.workspace }}/router-info.md
 
+      - name: Rename files for clarity
+        run: |
+          cd ${{ github.workspace }}/bin/targets/x86/64/
+          # 给 squashfs 版本重命名
+          for f in *squashfs-combined-efi.img.gz; do
+            mv "$f" "J4125-R8125-Squashfs-$(date +%Y%m%d).img.gz"
+          done
+          # 给 ext4 版本重命名
+          for f in *ext4-combined-efi.img.gz; do
+            mv "$f" "J4125-R8125-Ext4-$(date +%Y%m%d).img.gz"
+          done
+
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
-          tag_name: J4125-RTL8125软路由专用固件
-          body_path: ${{ github.workspace }}/router-info.md
+          tag_name: J4125-R8125-${{ github.run_id }}
           files: |
-            ${{ github.workspace }}/bin/targets/x86/64/*squashfs-combined-efi.img.gz
-          token: ${{ secrets.GITHUB_TOKEN }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            ${{ github.workspace }}/bin/targets/x86/64/J4125-R8125-*.img.gz
