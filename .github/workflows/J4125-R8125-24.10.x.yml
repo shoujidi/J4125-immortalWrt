@@ -137,18 +137,25 @@ jobs:
       - name: Rename files for clarity
         run: |
           cd ${{ github.workspace }}/bin/targets/x86/64/
-          # 给 squashfs 版本重命名
-          for f in *squashfs-combined-efi.img.gz; do
-            mv "$f" "J4125-R8125-Squashfs-$(date +%Y%m%d).img.gz"
-          done
-          # 给 ext4 版本重命名
-          for f in *ext4-combined-efi.img.gz; do
-            mv "$f" "J4125-R8125-Ext4-$(date +%Y%m%d).img.gz"
-          done
+          # 定义日期和版本变量
+          DATE=$(date +%Y%m%d)
+          VER="${{ github.event.inputs.luci_version }}"
+          
+          # 1. 重命名 Squashfs 镜像 (添加 efi)
+          [ -f *squashfs-combined-efi.img.gz ] && mv -f *squashfs-combined-efi.img.gz J4125-Immortalwrt-$VER-Squashfs-efi-$DATE.img.gz
+          
+          # 2. 重命名 Ext4 镜像 (添加 efi)
+          [ -f *ext4-combined-efi.img.gz ] && mv -f *ext4-combined-efi.img.gz J4125-Immortalwrt-$VER-Ext4-efi-$DATE.img.gz
+          
+          # 3. 重命名 Sysupgrade 升级包
+          [ -f *squashfs-sysupgrade.bin ] && mv -f *squashfs-sysupgrade.bin J4125-Immortalwrt-$VER-Sysupgrade-$DATE.bin
 
       - name: Upload ImmortWrt as release assets
         uses: softprops/action-gh-release@v2.2.1
         with:
           tag_name: J4125-R8125-${{ github.run_id }}
+          # 这里的 files 匹配模式也要相应修改以匹配新的前缀
           files: |
-            ${{ github.workspace }}/bin/targets/x86/64/J4125-R8125-*.img.gz
+            ${{ github.workspace }}/bin/targets/x86/64/J4125-Immortalwrt-*.img.gz
+            ${{ github.workspace }}/bin/targets/x86/64/J4125-Immortalwrt-*.bin
+          token: ${{ secrets.GITHUB_TOKEN }}
