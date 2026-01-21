@@ -67,6 +67,35 @@ PACKAGES="$PACKAGES luci-i18n-dufs-zh-cn"
 # 合并imm仓库以外的第三方插件
 PACKAGES="$PACKAGES $CUSTOM_PACKAGES"
 
+# ... 前面汇总 PACKAGES 的代码 ...
+
+# ==========================================
+# 🚀 J4125 + R8125 物理机极致精简模块
+# ==========================================
+
+# 1. 核心保留：J4125 运行 R8125 网卡必须的驱动
+KEEP_DRIVERS="kmod-r8125 kmod-usb-net-asix-ax88179"
+
+# 2. 彻底剔除：
+# - 虚拟化驱动 (PVE/ESXi/AWS)
+# - 多余的有线网卡 (Intel/Broadcom/Realtek老型号)
+# - 显卡驱动与固件 (J4125核显驱动极大，物理路由不需要)
+# - 所有无线/蓝牙/音频
+REMOVE_DRIVERS="\
+    -kmod-vmxnet3 -kmod-amazon-ena -kmod-pcnet32 -kmod-virtio-net \
+    -kmod-e1000 -kmod-e1000e -kmod-igb -kmod-igc -kmod-ixgbe -kmod-r8168 -kmod-r8101 -kmod-tg3 -kmod-bnx2 -kmod-tulip \
+    -kmod-i915 -kmod-amdgpu -kmod-drm -intel-igpu-firmware-dmc \
+    -kmod-iwlwifi -kmod-ath9k -kmod-ath10k -kmod-mt76 -kmod-rtl8xxxu -iwl100-firmware -iwl6000-firmware \
+    -kmod-sound-hda-intel -kmod-sound-hda-core -kmod-sound-hda-codec-hdmi -alsa-utils \
+    -kmod-bluetooth -kmod-nfc -kmod-usb-audio"
+
+# 3. 应用精简逻辑
+PACKAGES="$PACKAGES $KEEP_DRIVERS $REMOVE_DRIVERS"
+
+# ==========================================
+
+# 后面继续执行 make image ...
+
 
 # 判断是否需要编译 Docker 插件
 if [ "$INCLUDE_DOCKER" = "yes" ]; then
