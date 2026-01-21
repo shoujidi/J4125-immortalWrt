@@ -125,22 +125,29 @@ jobs:
           echo "- 🌐 拨号设置: ${{ github.event.inputs.enable_pppoe == 'yes' && '已预设 PPPoE' || '自动 DHCP' }}" >> ${{ github.workspace }}/router-info.md
           echo "- 📅 编译时间: $(date +'%Y-%m-%d %H:%M')" >> ${{ github.workspace }}/router-info.md
 
-      - name: Rename files for clarity （更改文件名称）
+      - name: Rename files for clarity (更改名称)
         run: |
+          # 进入目标目录
           cd ${{ github.workspace }}/bin/targets/x86/64/
+          
+          # 核心修复：修改当前目录下所有文件的所有权为当前用户
+          sudo chown -R $USER:$USER .
+          
           # 定义日期和版本变量
           DATE=$(date +%Y%m%d)
           VER="${{ github.event.inputs.luci_version }}"
           
           # 1. 重命名 Squashfs 镜像 (添加 efi)
-          [ -f *squashfs-combined-efi.img.gz ] && mv -f *squashfs-combined-efi.img.gz J4125-Immortalwrt-$VER-Squashfs-efi-$DATE.img.gz
+          [ -f *squashfs-combined-efi.img.gz ] && mv -f *squashfs-combined-efi.img.gz J4125-Immortalwrt-$VER-Squashfs-efi-$DATE.img.gz || echo "No Squashfs found"
           
           # 2. 重命名 Ext4 镜像 (添加 efi)
-          [ -f *ext4-combined-efi.img.gz ] && mv -f *ext4-combined-efi.img.gz J4125-Immortalwrt-$VER-Ext4-efi-$DATE.img.gz
+          [ -f *ext4-combined-efi.img.gz ] && mv -f *ext4-combined-efi.img.gz J4125-Immortalwrt-$VER-Ext4-efi-$DATE.img.gz || echo "No Ext4 found"
           
           # 3. 重命名 Sysupgrade 升级包
-          [ -f *squashfs-sysupgrade.bin ] && mv -f *squashfs-sysupgrade.bin J4125-Immortalwrt-$VER-Sysupgrade-$DATE.bin
-
+          [ -f *squashfs-sysupgrade.bin ] && mv -f *squashfs-sysupgrade.bin J4125-Immortalwrt-$VER-Sysupgrade-$DATE.bin || echo "No Sysupgrade found"
+          
+          # 列出结果验证
+          ls -lh J4125-Immortalwrt-*
       - name: Upload ImmortWrt as release assets (发布固件)
         uses: softprops/action-gh-release@v2.2.1
         with:
