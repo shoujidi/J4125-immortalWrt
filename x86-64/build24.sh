@@ -96,12 +96,17 @@ PACKAGES="$PACKAGES $KEEP_DRIVERS $REMOVE_DRIVERS"
 
 # 后面继续执行 make image ...
 
+# 修改为：强制不安装 Docker 相关插件
+# 如果以后想用，再改回原来的 if 逻辑
+REMOVE_DOCKER_PACKAGES="-luci-app-dockerman -luci-i18n-dockerman-zh-cn -docker -dockerd"
+PACKAGES="$PACKAGES $REMOVE_DOCKER_PACKAGES"
 
+echo "Docker packages disabled and marked for removal."
 # 判断是否需要编译 Docker 插件
-if [ "$INCLUDE_DOCKER" = "yes" ]; then
-    PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
-    echo "Adding package: luci-i18n-dockerman-zh-cn"
-fi
+#if [ "$INCLUDE_DOCKER" = "yes" ]; then
+ #   PACKAGES="$PACKAGES luci-i18n-dockerman-zh-cn"
+ #   echo "Adding package: luci-i18n-dockerman-zh-cn"
+#fi
 
 # 若构建openclash 则添加内核
 if echo "$PACKAGES" | grep -q "luci-app-openclash"; then
