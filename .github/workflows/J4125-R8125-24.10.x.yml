@@ -1,4 +1,4 @@
-name: build-x86-64-immortalwrt-24.10.x
+name: J4125-R8125
 
 on:
   workflow_dispatch:
