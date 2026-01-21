@@ -47,20 +47,20 @@ jobs:
     runs-on: ubuntu-22.04
 
     steps:
-      - name: Checkout code
+      - name: Checkout code （检查源码）
         uses: actions/checkout@v3
 
-      - name: Set executable permissions
+      - name: Set executable permissions （设置环境）
         run: chmod +x ${{ github.workspace }}/x86-64/build24.sh
 
-      - name: Save Custom Router IP into OpenWrt files
+      - name: Save Custom Router IP into OpenWrt files （设置管理地址）
         run: |
           mkdir -p "${{ github.workspace }}/custom"
           echo "${{ github.event.inputs.custom_router_ip }}" > "${{ github.workspace }}/custom/custom_router_ip.txt"
           echo "您设置的路由器管理地址是:${{ github.event.inputs.custom_router_ip }}"
           # 后续步骤会将该文件映射到路由器/etc/config/custom_router_ip.txt 以便用于开机脚本99-custom.sh读取用户设置的ip
       
-      - name: Validate PPPoE Inputs
+      - name: Validate PPPoE Inputs (设置拨号参数)
         run: |
           if [[ "${{ inputs.enable_pppoe }}" == "yes" ]]; then
             if [[ -z "${{ inputs.pppoe_account }}" || -z "${{ inputs.pppoe_password }}" ]]; then
@@ -69,7 +69,7 @@ jobs:
             fi
           fi
       
-      - name: Enable Store integration
+      - name: Enable Store integration （集成store）
         run: |
           if [ "${{ github.event.inputs.enable_store }}" == "true" ]; then
             echo 'CUSTOM_PACKAGES="$CUSTOM_PACKAGES luci-app-store"' >> shell/custom-packages.sh
@@ -78,7 +78,7 @@ jobs:
             echo "❎ 未启用 luci-app-store"
           fi
 
-      - name: Build ImmortalWrt-x86-64-efi
+      - name: Build ImmortalWrt-x86-64-efi （开始编译固件）
         run: |
           profile="${{ github.event.inputs.profile }}"
           include_docker="${{ github.event.inputs.include_docker }}"
@@ -100,7 +100,7 @@ jobs:
           immortalwrt/imagebuilder:x86-64-openwrt-${luci_version} /bin/bash /home/build/immortalwrt/build.sh
           
 
-      - name: Create info
+      - name: Create info （更新发布页信息）
         run: |
           cat > ${{ github.workspace }}/router-info.md <<EOF
           ## 📡 J4125 + R8125 物理机专属固件
@@ -125,7 +125,7 @@ jobs:
           echo "- 🌐 拨号设置: ${{ github.event.inputs.enable_pppoe == 'yes' && '已预设 PPPoE' || '自动 DHCP' }}" >> ${{ github.workspace }}/router-info.md
           echo "- 📅 编译时间: $(date +'%Y-%m-%d %H:%M')" >> ${{ github.workspace }}/router-info.md
 
-      - name: Rename files for clarity
+      - name: Rename files for clarity （更改文件名称）
         run: |
           cd ${{ github.workspace }}/bin/targets/x86/64/
           # 定义日期和版本变量
@@ -141,7 +141,7 @@ jobs:
           # 3. 重命名 Sysupgrade 升级包
           [ -f *squashfs-sysupgrade.bin ] && mv -f *squashfs-sysupgrade.bin J4125-Immortalwrt-$VER-Sysupgrade-$DATE.bin
 
-      - name: Upload ImmortWrt as release assets
+      - name: Upload ImmortWrt as release assets (发布固件)
         uses: softprops/action-gh-release@v2.2.1
         with:
           tag_name: J4125-R8125-${{ github.run_id }}
